@@ -22,7 +22,10 @@ def get_mx_host(email):
 
 
 def get_police_report(district,incident_types='9'):
-    r = requests.get('http://www.columbuspolice.org/reports/Results?from=%s&to=%s&loc=%s&types=%s' % (fromdate, todate, district, incident_types))
+    if district != 'all':
+        district = 'dis'+district
+    url = 'http://www.columbuspolice.org/reports/Results?from=%s&to=%s&loc=%s&types=%s' % (fromdate, todate, district, incident_types)
+    r = requests.get(url)
     # return full html page
     return r.text
 
@@ -59,5 +62,5 @@ if __name__ == "__main__":
     if not args.mailserver and not args.usemx:
         print("Must pass a mailserver or usemx")
 
-    emailcontent = get_police_report(args.district)
+    emailcontent = get_police_report(str(args.district))
     send_email(args.fromemail, args.toemail, emailcontent)
